@@ -1,12 +1,12 @@
-const { Router } = require('express');
+import { Router } from 'express';
 
 const router = Router();
 
 router.get('/', (req, res) => {
     res.status(200).json({
-        message: 'API em Express está funcionando!',
+        message: 'API em NodeJS está funcionando!',
         version: '1.0.0'
     });
 });
 
-module.exports = router;
+export default router;
