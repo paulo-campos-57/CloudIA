@@ -35,7 +35,7 @@ import { generateResponse } from '../services/llmService.js';
  *                   example: "O que é a lei de Hooke?"
  *                 tipo_resposta:
  *                   type: string
- *                   example: "detalhada"
+ *                   example: "curta"
  *                 explanation:
  *                   type: string
  *                   example: "A Lei de Hooke estabelece que a força exercida por uma mola é proporcional à deformação sofrida, desde que não ultrapasse o limite elástico do material."
@@ -61,9 +61,9 @@ export const explainTopic = async (req, res) => {
     }
 
     const instrucoes = {
-        curta: "explique de forma breve e direta.",
-        média: "forneça uma explicação clara e concisa.",
-        detalhada: "dê uma explicação detalhada com exemplos."
+        curta: "explique de forma **extremamente breve e direta**, usando **somente 3 a 4 frases no máximo**,",
+        media: "forneça uma explicação clara e concisa, limitada a **apenas dois pequenos parágrafos** ou no máximo **9 frases**,",
+        detalhada: "dê uma explicação detalhada, abrangente, incluindo **exemplos práticos** e, se possível, um **tópico de aprofundamento**,"
     }
 
     const prompt = `Como um professor de Ciência da computação, de Cloud, ${instrucoes[tipo]} o seguinte tópico para um estudante: "${topic}"`;

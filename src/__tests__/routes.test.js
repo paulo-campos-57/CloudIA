@@ -10,7 +10,7 @@ describe("Rotas principais", () => {
         const response = await request(app).get("/");
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
-            message: "API em NodeJS está funcionando!",
+            message: "Bem vindo ao CloudIA API!",
             version: "1.0.0"
         });
     });
