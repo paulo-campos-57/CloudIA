@@ -1,4 +1,4 @@
-name: Deploy para Staging (Render)
+name: Deploy Render (Staging ou Main)
 
 on:
   push:
@@ -44,16 +44,22 @@ jobs:
 
       - name: Build da Imagem Docker (sem push)
         run: |
-          docker build -t nome-da-sua-imagem-staging .
+          docker build -t cloudia-${{ github.ref_name }} .
   
   deploy:
-    name: Deploy no Render (Staging)
+    name: Deploy no Render
     needs: docker-build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Chamar Deploy Hook do Render
+      - name: Definir Hook conforme a branch
+        id: hook
         run: |
-          curl -X POST "$RENDER_DEPLOY_HOOK_STAGING"
-        env:
-          RENDER_DEPLOY_HOOK_STAGING: ${{ secrets.RENDER_DEPLOY_HOOK_STAGING }}
+          if [ "${GITHUB_REF##*/}" = "staging" ]; then
+            echo "hook=${{ secrets.RENDER_DEPLOY_HOOK_STAGING }}" >> $GITHUB_OUTPUT
+          else
+            echo "hook=${{ secrets.RENDER_DEPLOY_HOOK_MAIN }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Chamar Deploy Hook do Render
+        run: curl -X POST "${{ steps.hook.outputs.hook }}"
