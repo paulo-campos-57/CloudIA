@@ -7,6 +7,9 @@ on:
 
 jobs:
   promote-to-main:
+    permissions:
+      contents: write
+      pull-requests: write
     if: |
       github.event.pull_request.merged == true &&
       github.event.pull_request.base.ref == 'staging' &&
