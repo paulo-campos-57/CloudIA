@@ -1,0 +1,65 @@
+name: Deploy Render (Staging ou Main)
+
+on:
+  push:
+    branches: [ staging, main ]
+  pull_request:
+    branches: [ staging, main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build, Teste e Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Rodar Lint
+        run: npm run lint --if-present
+
+      - name: Rodar Testes
+        run: npm test
+
+  docker-build:
+    name: Build da imagem Docker
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build da Imagem Docker (sem push)
+        run: |
+          docker build -t cloudia-${{ github.ref_name }} .
+  
+  deploy:
+    name: Deploy no Render
+    needs: docker-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Definir Hook conforme a branch
+        id: hook
+        run: |
+          if [ "${GITHUB_REF##*/}" = "staging" ]; then
+            echo "hook=${{ secrets.RENDER_DEPLOY_HOOK_STAGING }}" >> $GITHUB_OUTPUT
+          else
+            echo "hook=${{ secrets.RENDER_DEPLOY_HOOK_MAIN }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Chamar Deploy Hook do Render
+        run: curl -X POST "${{ steps.hook.outputs.hook }}"
