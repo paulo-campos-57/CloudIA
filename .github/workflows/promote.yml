@@ -1,0 +1,44 @@
+name: Promote Staging → Main
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [staging]
+
+jobs:
+  promote-to-main:
+    if: |
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'staging' &&
+      github.event.pull_request.head.ref == 'development'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checar código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Rodar Lint
+        run: npm run lint
+
+      - name: Rodar Testes
+        run: npm test
+
+      - name: Criar Pull Request automático para main
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          branch: staging
+          title: "Promover staging → main"
+          body: "PR automático após merge de development → staging."
+          draft: false
