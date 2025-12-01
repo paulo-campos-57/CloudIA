@@ -17,6 +17,10 @@ const swaggerDefinition = {
             url: 'http://localhost:3000',
             description: 'Servidor de Desenvolvimento Local',
         },
+        {
+            url: 'https://cloudia-ljca.onrender.com/',
+            description: 'Servidor de Produção'
+        }
     ],
 };
 
