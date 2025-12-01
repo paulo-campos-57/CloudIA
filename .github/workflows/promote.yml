@@ -1,0 +1,37 @@
+name: Promote Staging → Main
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [staging]
+
+jobs:
+  promote-to-main:
+    permissions:
+      contents: write
+      pull-requests: write
+
+    if: >
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'staging' &&
+      github.event.pull_request.head.ref == 'development'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (na branch STAGING)
+        uses: actions/checkout@v4
+        with:
+          ref: staging
+          fetch-depth: 0
+
+      - name: Criar Pull Request automático para main
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          branch: promote-staging-to-main
+          title: "Promover staging → main"
+          body: "PR automático após merge de development → staging."
+          delete-branch: true
+          draft: false
