@@ -33,7 +33,7 @@ O backend da API está hospedado no Render.
 
 Você pode interagir com esta API através do frontend relacionado:
 
-**Frontend para uso da API:** `https://cloud-ia-frontend.vercel.app/`
+**Frontend para uso da API:** `https://github.com/paulo-campos-57/CloudIA-Frontend/tree/main`
 
 -----
 
@@ -153,7 +153,7 @@ The API backend is hosted on Render.
 
 You can interact with this API through the related frontend:
 
-**Frontend for API usage:** `https://cloud-ia-frontend.vercel.app/`
+**Frontend for API usage:** `https://github.com/paulo-campos-57/CloudIA-Frontend/tree/main`
 
 -----
 
